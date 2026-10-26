@@ -1,6 +1,6 @@
 # The Stablecoin Dollar Premium in Emerging Markets
 
-STAT 5200 (Applied Econometrics I), Fall 2026. Author: Ahan Patani.
+Final research project for STAT 5200 (Applied Econometrics I), Fall 2026, University of Pennsylvania. Author: Ahan Patani.
 
 How large and persistent is the premium residents of emerging markets pay to buy
 dollars through USDT stablecoin markets, how does it respond to devaluations and
