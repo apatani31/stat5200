@@ -1,3 +1,7 @@
+# Python virtual environment (only used for the LSEG pull)
+.venv/
+__pycache__/
+
 # R
 .Rhistory
 .RData
@@ -24,3 +28,5 @@ data/processed/*
 !data/processed/.gitkeep
 !data/raw/imf_wpcper.csv
 !data/raw/.gitkeep
+# Listed explicitly as well, so it stays ignored if the rules above change.
+data/raw/refinitiv_fx.csv
