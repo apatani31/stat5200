@@ -45,6 +45,10 @@ OUTLIER_THRESH <- 0.15    # log points
 # fixed peg: quotes alternate between two levels about 11% apart.
 UKR_FWD_EXCLUDE <- as.Date(c("2022-02-24", "2023-10-02"))
 
+# Window (calendar days on each side, event day excluded) for the pre/post
+# means around each event in R/03_descriptives.R.
+EVENT_WINDOW <- 30L
+
 # Event dates for the event-study extension (documented in README).
 EVENTS <- data.table(
   iso3  = c("ARG", "ARG"),
