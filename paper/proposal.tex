@@ -4,6 +4,10 @@
 \usepackage[hidelinks]{hyperref}
 \setlength{\parskip}{4pt}\setlength{\parindent}{0pt}
 \pagestyle{empty}
+% Numbers quoted in the text come from R/03_descriptives.R via these macros.
+\newif\ifedamacros
+\IfFileExists{../output/tables/eda_macros.tex}
+  {\input{../output/tables/eda_macros.tex}\edamacrostrue}{}
 
 \begin{document}
 \begin{center}
@@ -15,21 +19,27 @@ Repository: \url{https://github.com/USERNAME/stablecoin-premia}
 \textbf{(i) Problem.} When residents of an emerging market cannot buy dollars at the official exchange rate, they pay a premium wherever dollars are available. That premium used to sit in informal parallel markets; it now increasingly appears on exchanges where USD stablecoins such as Tether (USDT) trade directly against the local currency. I ask: how large and persistent is this \emph{stablecoin dollar premium}, how does it respond to official devaluations and to the tightening or easing of foreign exchange controls, and does it carry the same information as the Bitcoin-based premia that the IMF proposes as an indicator of excess demand for foreign currency? Recent BIS work (Hofmann, Mehrotra and Paulick, BIS Working Paper 1370, 2026) uses proprietary Chainalysis flow data and finds that stablecoin inflows barely respond to capital controls. I study \emph{prices} rather than flows at daily frequency, which lets me examine the transmission of specific policy events and separate an access premium from ordinary expected depreciation.
 
 \textbf{(ii) Data.} All sources are on my computer and \texttt{run\_all.R} rebuilds the panel from scratch.
-(1) \emph{IMF Crypto-based Parallel Exchange Rates} (WP-CPER): the price of Bitcoin on local markets relative to the U.S. market, posted by the IMF with Graf von Luckner, Koepke and Sgherri (2024).
-(2) \emph{Binance daily klines} for USDT/ARS, USDT/TRY, USDT/BRL and USDT/UAH (2021 to 2026): close price and USDT volume.
-(3) \emph{LSEG Workspace (Refinitiv)}: official spot rates and 1-month forward or NDF outrights for the same currencies, plus Argentina's parallel (CCL) rate where available. Refinitiv data are licensed, so the repository stores the pull script and RIC list but not the raw file; Yahoo Finance spot rates serve as a public fallback.
+(1) \emph{IMF Crypto-based Parallel Exchange Rates} (WP-CPER): the price of Bitcoin on local markets relative to the U.S. market, posted by the IMF with Graf von Luckner, Koepke and Sgherri (2024); it is monthly, ends in October 2025 and does not cover Turkey.
+(2) \emph{Binance daily klines} for USDT/ARS, USDT/TRY, USDT/BRL and USDT/UAH (2021 to 2026, except USDT/ARS, which starts in April 2023): close price and USDT volume.
+(3) \emph{LSEG Workspace (Refinitiv)}: official spot rates and 1-month forward or NDF outrights for the same currencies, plus Argentina's CCL rate, the only parallel-market series in the panel. Ukraine's forward is missing during the fixed peg from 24 February 2022 to 2 October 2023, when its quotes are not usable prices. Refinitiv data are licensed, so the repository stores the pull script and RIC list but not the raw file; Yahoo Finance spot rates serve as a public fallback.
 The key variable is $p_{it}=\log(P^{\text{USDT}}_{it}/S^{\text{off}}_{it})$, the log gap between the stablecoin price of a dollar and the official rate in country $i$ on day $t$. Brazil, with an open capital account, serves as a near-zero-premium benchmark.
 
 \textbf{(iii) Paper to replicate.} Graf von Luckner, Koepke and Sgherri (2024), \emph{Crypto as a Marketplace for Capital Flight}, IMF Working Paper 24/133. It models crypto exchanges as venues where residents without FX access pay a premium to residents with access, and documents persistent local crypto premia in countries with FX restrictions. The paper's premium dataset is publicly posted, so its descriptive results and country case studies are replicable. It builds on Graf von Luckner, Reinhart and Rogoff (2023), whose LocalBitcoins and Paxful microdata are not public, which is why I replicate the IMF follow-up instead.
 
-\textbf{Planned models.} (a) Panel regression $p_{it}=\alpha_i+\gamma_t+\beta\,\Delta s^{\text{off}}_{i,t-1}+\theta\,e_{it}+\delta\,v_{it}+\varepsilon_{it}$ with country and day fixed effects and Driscoll--Kraay standard errors, where $e_{it}=\log(F^{1M}_{it}/S^{\text{off}}_{it})$ is forward-implied expected depreciation and $v_{it}$ is log USDT volume; the residual premium after controlling for $e_{it}$ is the access premium. (b) Event studies with leads and lags around Argentina's December 2023 official devaluation and its April 2025 easing of FX controls, using Brazil as a comparison series. (c) Regressions of the USDT premium on the IMF Bitcoin premium and on Argentina's CCL gap to test whether these are interchangeable indicators.
+\textbf{Planned models.} (a) Panel regression $p_{it}=\alpha_i+\gamma_t+\beta\,\Delta s^{\text{off}}_{i,t-1}+\theta\,e_{it}+\delta\,v_{it}+\varepsilon_{it}$ with country and day fixed effects and Driscoll--Kraay standard errors, where $e_{it}=\log(F^{1M}_{it}/S^{\text{off}}_{it})$ is forward-implied expected depreciation and $v_{it}$ is log USDT volume; the residual premium after controlling for $e_{it}$ is the access premium. (b) Event studies with leads and lags around Argentina's December 2023 official devaluation and its April 2025 easing of FX controls, using Brazil as a comparison series. (c) Regressions of the USDT premium on the IMF Bitcoin premium (monthly) and on Argentina's CCL gap to test whether these are interchangeable indicators.
 
-\textbf{Descriptive statistics} (daily, mean with SD in parentheses, produced by \texttt{R/03\_descriptives.R}):\\[2pt]
+\textbf{Descriptive statistics} (daily mean with SD in parentheses; the IMF premium and its correlation with the USDT premium are monthly; AR(1) of the daily USDT premium; produced by \texttt{R/03\_descriptives.R}):\\[2pt]
 \begin{center}\small
 \IfFileExists{../output/tables/desc_stats_proposal.tex}
   {\input{../output/tables/desc_stats_proposal.tex}}
   {\textcolor{red}{Run \texttt{Rscript run\_all.R} to generate this table.}}
 \end{center}
+
+\ifedamacros
+\textbf{Descriptive evidence.} The panel has \Ncountrydays{} country-days. Argentina's premium is highly persistent (AR(1) \ARGarone, half-life \ARGhalflife{} days, ADF $p=\ARGadfp$), as is Ukraine's (\UKRarone), while Turkey's (\TURarone) and Brazil's (\BRAarone) revert within days. In the \Eventwindow{} days around the December 2023 devaluation, Argentina's mean premium fell from \ARGdecpre{} to \ARGdecpost{} (CCL gap \ARGdecparpre{} to \ARGdecparpost), and around the April 2025 easing from \ARGaprpre{} to \ARGaprpost. The USDT premium moves almost one for one with the CCL gap (daily correlation \ARGcorrpar) and with the IMF Bitcoin premium (monthly correlation \ARGcorrbtc{} over \ARGnbtc{} months; \UKRcorrbtc{} for Ukraine), but not in Brazil (\BRAcorrbtc), where both premia are near zero.
+\else
+\textcolor{red}{Run \texttt{Rscript run\_all.R} to generate the descriptive evidence.}
+\fi
 
 \vspace{-4pt}
 {\footnotesize\textbf{References.} Graf von Luckner, C., Koepke, R., and Sgherri, S. (2024). Crypto as a Marketplace for Capital Flight. IMF Working Paper 24/133. \quad Graf von Luckner, C., Reinhart, C.\,M., and Rogoff, K. (2023). Decrypting New Age International Capital Flows. \emph{Journal of Monetary Economics}, 138, 104--122.\par}
