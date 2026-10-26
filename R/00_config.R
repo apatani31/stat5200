@@ -31,6 +31,20 @@ COUNTRIES <- data.table(
   yahoo    = c("ARS=X",   "TRY=X",   "BRL=X",   "UAH=X")
 )
 
+# ---- Refinitiv data-quality rules (documented in README) -------------------
+# Bad-tick filter: an observation is set to NA when its log deviation from
+# the centred rolling median (over trading days) exceeds the threshold. The
+# window must be wider than twice the longest run of bad values; ARS1MNDF=
+# is stuck at an implausible level for 5 trading days in October 2025.
+OUTLIER_SERIES <- data.table(iso3 = c("ARG", "ARG"),
+                             series = c("fwd1m", "parallel"))
+OUTLIER_WINDOW <- 11L     # trading days, centred
+OUTLIER_THRESH <- 0.15    # log points
+
+# The UAH 1M NDF is not a usable price during the National Bank of Ukraine's
+# fixed peg: quotes alternate between two levels about 11% apart.
+UKR_FWD_EXCLUDE <- as.Date(c("2022-02-24", "2023-10-02"))
+
 # Event dates for the event-study extension (documented in README).
 EVENTS <- data.table(
   iso3  = c("ARG", "ARG"),

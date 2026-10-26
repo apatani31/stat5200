@@ -10,12 +10,12 @@ suppressPackageStartupMessages({
 panel <- fread(file.path(PATH_PROCESSED, "panel_daily.csv"))
 panel[, date := as.Date(date)]
 
+# The IMF premium is monthly, so its statistics come from the monthly panel.
+monthly <- fread(file.path(PATH_PROCESSED, "panel_monthly.csv"))
+
 vars <- c(usdt_premium = "USDT premium (log pts)",
           official_dep = "Official depreciation (daily, log)",
           log_volume   = "log(1 + USDT volume)")
-if ("btc_premium" %in% names(panel)) {
-  vars <- c(vars, btc_premium = "BTC premium, IMF WP-CPER")
-}
 if ("exp_dep_1m" %in% names(panel)) {
   vars <- c(vars, exp_dep_1m = "1M forward-implied depreciation")
 }
@@ -25,6 +25,7 @@ if ("parallel_gap" %in% names(panel)) {
 
 stat_row <- function(x) {
   x <- x[is.finite(x)]
+  if (length(x) == 0) return(c(N = 0))   # callers skip empty variables
   c(N = length(x), Mean = mean(x), SD = sd(x), Min = min(x),
     Median = median(x), Max = max(x))
 }
@@ -37,6 +38,16 @@ for (cc in COUNTRIES$iso3) {
     rows[[length(rows) + 1]] <- data.table(Country = cc, Variable = vars[[v]],
                                            t(s))
   }
+  if ("btc_premium" %in% names(monthly)) {
+    s <- stat_row(monthly[iso3 == cc, btc_premium])
+    if (s["N"] > 0)
+      rows[[length(rows) + 1]] <- data.table(
+        Country = cc, Variable = "BTC premium, IMF WP-CPER (monthly, log pts)",
+        t(s))
+  }
+}
+if ("btc_premium" %in% names(monthly)) {
+  vars <- c(vars, btc_premium = "BTC premium, IMF WP-CPER (monthly, log pts)")
 }
 desc <- rbindlist(rows)
 fwrite(desc, file.path(PATH_TABLES, "desc_stats.csv"))

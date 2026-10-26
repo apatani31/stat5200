@@ -28,7 +28,10 @@ download_pair <- function(pair) {
       download.file(url, tmp, quiet = TRUE, mode = "wb"); TRUE
     }, error = function(e) FALSE, warning = function(w) FALSE)
     if (!ok) return(NULL)                     # pair not listed that month
-    dt <- fread(unzip(tmp, exdir = tempdir()), header = FALSE)
+    # Timestamps exceed 32-bit integers; read them as doubles (exact up to
+    # 2^53) instead of integer64, which as.numeric() misreads without bit64.
+    dt <- fread(unzip(tmp, exdir = tempdir()), header = FALSE,
+                integer64 = "double")
     setnames(dt, binance_cols)
     dt[, pair := pair]
     dt

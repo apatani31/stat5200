@@ -6,7 +6,7 @@
 source("R/00_config.R")
 source("R/01_download.R")
 # Refinitiv pull runs separately (needs the Workspace app open):
-#   python R/01b_pull_refinitiv.py
+#   .venv\Scripts\python R/01b_pull_refinitiv.py
 # 02_clean.R uses its output if present, otherwise falls back to Yahoo.
 source("R/02_clean.R")
 source("R/03_descriptives.R")
