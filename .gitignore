@@ -1,0 +1,26 @@
+# R
+.Rhistory
+.RData
+.Rproj.user/
+renv/library/
+renv/staging/
+
+# LaTeX build files
+*.aux
+*.log
+*.out
+*.synctex.gz
+*.fls
+*.fdb_latexmk
+
+# OS
+.DS_Store
+
+# Raw data are re-downloaded by R/01_download.R. Keep imf_wpcper.csv
+# tracked because it is a manual download with a fixed vintage.
+# refinitiv_fx.csv is licensed LSEG data and must never be committed.
+data/raw/*
+data/processed/*
+!data/processed/.gitkeep
+!data/raw/imf_wpcper.csv
+!data/raw/.gitkeep

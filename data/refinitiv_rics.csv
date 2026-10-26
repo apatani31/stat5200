@@ -1,0 +1,10 @@
+iso3,series,ric,note
+ARG,spot,ARS=,Official USD/ARS spot
+TUR,spot,TRY=,Official USD/TRY spot
+BRA,spot,BRL=,Official USD/BRL spot
+UKR,spot,UAH=,Official USD/UAH spot
+ARG,fwd1m,,Fill in: 1M NDF outright (Workspace search: ARS NDF 1M)
+TUR,fwd1m,,Fill in: 1M forward outright (Workspace search: TRY 1M outright)
+BRA,fwd1m,,Fill in: 1M NDF outright (Workspace search: BRL NDF 1M)
+UKR,fwd1m,,Fill in if a liquid 1M NDF exists; leave blank otherwise
+ARG,parallel,,Optional: CCL or MEP rate if Workspace carries one
