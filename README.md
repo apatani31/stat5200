@@ -9,7 +9,10 @@ FX controls, and does it carry the same information as Bitcoin-based premia?
 ## Reproduce everything
 
 ```bash
-python R/01b_pull_refinitiv.py   # optional; needs LSEG Workspace open
+# optional; needs LSEG Workspace open (Windows paths shown)
+py -m venv .venv
+.venv\Scripts\python -m pip install -r requirements.txt
+.venv\Scripts\python R/01b_pull_refinitiv.py
 ```
 
 ```r
@@ -39,14 +42,32 @@ Then compile `paper/proposal.tex` (it reads `output/tables/desc_stats_proposal.t
 |---|---|---|
 | `binance_usdt_klines.csv` | Binance public bulk data, https://data.binance.vision | Scripted |
 | `official_fx_yahoo.csv` | Yahoo Finance via `quantmod` (ARS=X, TRY=X, BRL=X, UAH=X) | Scripted |
-| `refinitiv_fx.csv` | LSEG Workspace: spot, 1M forward/NDF, ARS parallel rate | Licensed, git-ignored, pulled by `R/01b_pull_refinitiv.py`, vintage: YYYY-MM-DD |
-| `imf_wpcper.csv` | IMF Crypto-based Parallel Exchange Rates, https://data.imf.org/en/datasets/IMF.STA:WPCPER | Manual download, vintage: YYYY-MM-DD |
+| `refinitiv_fx.csv` | LSEG Workspace: spot, 1M forward/NDF, ARS parallel rate | Licensed, git-ignored, pulled by `R/01b_pull_refinitiv.py`, vintage: 2026-10-26 |
+| `imf_wpcper.csv` | IMF Crypto-based Parallel Exchange Rates, https://data.imf.org/en/datasets/IMF.STA:WPCPER | Manual download, vintage: 2026-10-26 (dataset version IMF.STA:WPCPER 6.0.0; monthly, 2019-01 to 2025-10; Turkey not covered) |
 
 ## Key variable
 
 `usdt_premium = log(USDT price in local currency / official USD rate)`.
 Weekend official rates are carried forward from the last quote.
 `exp_dep_1m = log(F_1M / S)` is forward-implied expected depreciation (Refinitiv only).
+
+## Data-quality rules
+
+Applied in `R/02_clean.R` with settings in `R/00_config.R`; raw files are never edited.
+
+- Refinitiv weekend rows are dropped (they are carry-overs) and all series are
+  carried forward over non-trading days in the panel.
+- Bad-tick filter for the Argentine 1M forward (`ARS1MNDF=` outright) and CCL
+  (`ARSCONTPON=`): a value is set to NA when it deviates by more than 0.15 log
+  points from its centred 11-trading-day rolling median. The window must
+  exceed twice the longest bad run (`ARS1MNDF=` is stuck at 2901.69 from
+  2025-10-17 to 2025-10-23). Flagged values are listed in
+  `data/processed/refinitiv_outliers.csv` (8 values at the 2026-10-26 vintage).
+- `exp_dep_1m` for Ukraine is set to NA from 2022-02-24 to 2023-10-02, the
+  National Bank of Ukraine's fixed-peg period, when `UAH1MNDFOR=` alternates
+  between two quote levels about 11% apart and is not a usable price.
+- Binance USDT/ARS starts in April 2023, so Argentina's USDT premium covers
+  2023-04 to 2026-09; the other three pairs cover the full sample.
 
 ## Licensed data
 
