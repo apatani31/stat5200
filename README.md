@@ -43,7 +43,7 @@ Then compile `paper/proposal.tex` (it reads `output/tables/desc_stats_proposal.t
 | `binance_usdt_klines.csv` | Binance public bulk data, https://data.binance.vision | Scripted |
 | `official_fx_yahoo.csv` | Yahoo Finance via `quantmod` (ARS=X, TRY=X, BRL=X, UAH=X) | Scripted |
 | `refinitiv_fx.csv` | LSEG Workspace: spot, 1M forward/NDF, ARS parallel rate | Licensed, git-ignored, pulled by `R/01b_pull_refinitiv.py`, vintage: 2026-10-26 |
-| `imf_wpcper.csv` | IMF Crypto-based Parallel Exchange Rates, https://data.imf.org/en/datasets/IMF.STA:WPCPER | Manual download, vintage: 2026-10-26 (dataset version IMF.STA:WPCPER 6.0.0; monthly, 2019-01 to 2025-10; Turkey not covered) |
+| `imf_wpcper.csv` | IMF Crypto-based Parallel Exchange Rates, https://data.imf.org/en/datasets/IMF.STA:WPCPER | Manual download (IMF copyright, git-ignored), vintage: 2026-10-26 (dataset version IMF.STA:WPCPER 6.0.0; monthly, 2019-01 to 2025-10; Turkey not covered) |
 
 ## Key variable
 

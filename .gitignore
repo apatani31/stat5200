@@ -20,13 +20,13 @@ renv/staging/
 # OS
 .DS_Store
 
-# Raw data are re-downloaded by R/01_download.R. Keep imf_wpcper.csv
-# tracked because it is a manual download with a fixed vintage.
+# Raw data are re-downloaded by R/01_download.R. imf_wpcper.csv is a manual
+# download (IMF copyright, all rights reserved), so it is not committed; its
+# vintage is recorded in README.md.
 # refinitiv_fx.csv is licensed LSEG data and must never be committed.
 data/raw/*
 data/processed/*
 !data/processed/.gitkeep
-!data/raw/imf_wpcper.csv
 !data/raw/.gitkeep
 # Listed explicitly as well, so it stays ignored if the rules above change.
 data/raw/refinitiv_fx.csv
